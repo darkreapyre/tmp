@@ -42,6 +42,23 @@ where $wj$ is the weight that can be assigned to the $j^{th}$ classifier.
 Once created, the pipeline (see Section 7) will be used to test and deploy the models on a sample unseen data from the new test subjects and hence predict their stress levels.
 
 ### Metrics
+Since the success criteria of the project is based on the overall __probability__ of the time segment observation belonging to either class (`stressed` or `relaxed`), each individual model as well as the overall consensus pipeline will be evaluated using the following metrics:
+
+1. __Confusion Matrix:__ $\rightarrow$ A tabular breakdown of predictions into a table showing the predictions that are correctly classified as well and the predictions are made incorrectly.
+2. __Recall:__ $\rightarrow$ The measure of completeness of the classifier. In other words, if the label is `stressed`, how well does the model predict that the subject is `stressed`. Basically, the ratio of the number of observations the model can correctly recall, to the number of all correct observations.
+$$
+Recall = \frac{True Positive}{True Positive + False Negative}
+$$
+
+3. __Precision:__ $\rightarrow$ The number of positive predictions divided by the total positive class values. So, precision is the ratio of a number of observations the model can correctly predict to a number of all observations the model can recall. In other words, it is how precise the model's recall is.
+$$
+Precision = \frac{True Positive}{True Positive + False Positive}
+$$
+
+4. __F1 Score:__ $\rightarrow$ If the models are good at *Recall*, that doesn't necessarily mean that they are good at *Precision*. The *F1 Score* is the balanced average of the the two. This balanced *F1 Score* is necessary as an overal performance metric due to the fact that if there is a misclassification that the subject is under stress, but isn't, then the emergency medical services are called out unnecessarily. If however, there is a misclassification that the subject isn't stressed, but actually is, then this could result in a fatality. Having the *F1 Score* will allow us to allocate more weight to *Precision* or *Recall*.
+$$
+F1 \ Score = \frac{2 \cdot Precision}{Precision + Recall}
+$$
 
 ## II. Analysis
 ### Data Exploration
