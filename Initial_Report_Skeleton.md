@@ -22,6 +22,16 @@ The dataset used for this Project was obtained as part of a *Proof of Concept (P
 ### Problem Statement
 For this Project, I propose creating a classification pipeline that ingests heart-rate signal data (from a simulated wearable monitor) and classifies whether the subject is in a stressful situation that could lead to *Cardiac Unrest*. Additionally, in order to prevent a "cry-wolf" scenario or *false-positives*, the pipeline employs a consensus mechanism where three classifiers must all agree on the classification.
 
+To address the scope of this project however, I propose training three separate supervised machine learning models by applying the following methodology to create a pipeline:
+
+1. Separate the input data into two separate repositories. One for the observations and one for the labeled output.
+2. Apply __normalization__ and/or __standardization__ techniques to  pre-process the data.
+3. Define three separate models to evaluate the the data.
+>__Note:__ There are two concerns with the above dataset. The *first* is that fact that it has only __300__ observations, thus making it a relatively small data set. The *second* is the fact that there are significantly more observations labeled as `relaxed` then there are those labeled as `stressed`. To address this *imbalance* and verify the accuracy of the predictions, I propose leveraging __k-fold cross validation__ to split the the data into a **60%** training set and a **30%** testing set. This process will be executed **10** times (10 Folds). The advantage of this technique is that it can treat each test set uniquely, thus addressing the fact that the data set used is relatively small, and provide an average prediction result across the 10 folds. This process will be used for each of the three models.
+
+4. Apply the models and measure their performance on a completely __separate__ and as yet __unseen__ dataset. This dataset is exactly the same as the training dataset except it is has no `State` label.
+
+
 ### Metrics
 
 ## II. Analysis
