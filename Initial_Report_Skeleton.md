@@ -20,6 +20,7 @@ The dataset used for this Project was obtained as part of a *Proof of Concept (P
 8. __Label__ $\rightarrow$ Stressed or Relaxed.
 
 ### Problem Statement
+For this Project, I propose creating a classification pipeline that ingests heart-rate signal data (from a simulated wearable monitor) and classifies whether the subject is in a stressful situation that could lead to *Cardiac Unrest*. Additionally, in order to prevent a "cry-wolf" scenario or *false-positives*, the pipeline employs a consensus mechanism where three classifiers must all agree on the classification.
 
 ### Metrics
 
