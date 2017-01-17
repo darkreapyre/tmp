@@ -8,6 +8,17 @@ As one gets older, an increasingly difficult awareness of our parent's mortality
 
 Additionally, since one of the potential symptoms is the increase in heart rates. There are a number of potential factors that influence the increase in heart rate, but there are well published guidelines[^2] that can be used to determine anomalous patterns. If these anomalies occur, the the __data ingestion pipeline__ could proactively determine if a heart attack is about to *or* has occurred and alert the appropriate emergency medical response. Thus proactively preventing a fatal or near-fatal heart attack. As am added benefit, the __pipeline__ mechanism can be used to monitor patients who are in *Cardiac Rehabilitation*[^3].
 
+The dataset used for this Project was obtained as part of a *Proof of Concept (POC)* project in the __Dell IoT Solutions Lab__ [^6] in Santa Clara, California, where a PPG [^4] Pulse sensor was used to measure Heart Rate Variability (HRV) [^7]  reading, similar to those found on current wearables like the __Fitbit Charge 2__ [^8]. The scope of the original POC is simply to verify if the data can be extracted and filtered to detect peaks in the PPG signal for a one minute data segment. Four separate test subjects (between the ages of 68 and 76) were subjected to different stimuli to induce *stress* and *relaxing* scenarios. The one minute observations (__300__ in total) are stored in a `data.csv` file. Each observation has __8__ specific features of the PPG waveform, namely:
+
+1. __Time__ $\rightarrow$ Time Stamp of the observation.
+2. __AVRR__ $\rightarrow$ Average "normal" hert beats.
+3. __AVHR__ $\\rightarrow$ Average total heart beats.
+4. __SDRR__ $\rightarrow$ Standard Deviation of "normal" heart beats.
+5. __RMSRR__ $\rightarrow$ Root Mean Squared of "normal" hear beats.
+6. __ppNN50__ $\rightarrow$ Proportion of NN50 (50 successive "normal" heart beats) divided by total number of "normal" heart beats.
+7. __ppNN20__ $\rightarrow$ Proportion of NN20 (20 successive "normal" heart beats) divided by total number of "normal" heart beats.
+8. __Label__ $\rightarrow$ Stressed or Relaxed.
+
 ### Problem Statement
 
 ### Metrics
