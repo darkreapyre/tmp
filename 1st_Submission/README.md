@@ -19,4 +19,7 @@ jupyter notebook Report.ipynb
     - __numpy__ (1.12.0)
     
 4. Images for the pipeline architecture can be found in the images directory:
-    - __images\Pipeline.png
+    - __images\Pipeline.png__
+
+5. Final Report:
+    - __Report.pdf__
