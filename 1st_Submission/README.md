@@ -17,5 +17,6 @@ jupyter notebook Report.ipynb
     - __scikit-learn__ (1.18.1)
     - __pandas__ (0.19.2)
     - __numpy__ (1.12.0)
+    
 4. Images for the pipeline architecture can be found in the images directory:
-    - __images\Pipeline.jpg
+    - __images\Pipeline.png
