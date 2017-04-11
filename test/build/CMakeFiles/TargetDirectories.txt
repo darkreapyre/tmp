@@ -1,3 +1,0 @@
-/home/ubuntu/CarND-T2-P1/build/CMakeFiles/edit_cache.dir
-/home/ubuntu/CarND-T2-P1/build/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/CarND-T2-P1/build/CMakeFiles/ExtendedKF.dir

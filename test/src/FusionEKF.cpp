@@ -62,8 +62,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
                0, 1, 0, 1;
 
     // Initialize noise variables
-    noise_ax = 9;
-    noise_ay = 9;
+    noise_ax = 5;
+    noise_ay = 5;
 
     // Initialize laser measurement covairance matrix R_laser
     R_laser_ << 0.0225, 0,
