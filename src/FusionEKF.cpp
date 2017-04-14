@@ -54,14 +54,13 @@ FusionEKF::FusionEKF() {
              0, 0, 1, 0,
              0, 0, 0, 1;
 
-/* DOUBLE CHECK
-
-  //measurement matrix
+/* No need to initilaize H_ as H_laser_ will become ekf_.H_
+  // measurement matrix
 	ekf_.H_ = MatrixXd(2, 4);
 	ekf_.H_ << 1, 0, 0, 0,
              0, 1, 0, 0;
 */
-  
+
   // Initialize the Process covariance matrix Q
   ekf_.Q_ = MatrixXd(4, 4);
 
