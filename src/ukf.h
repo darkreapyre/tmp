@@ -74,6 +74,15 @@ public:
   ///* the current NIS for laser
   double NIS_laser_;
 
+  ///* augmented mean vector
+  VectorXd x_aug_;
+
+  ///* augmented state covariance matrix
+  MatrixXd P_aug_;
+
+  ///* augmented sigma points matrix
+  MatrixXd Xsig_aug_;
+  
   /**
    * Constructor
    */
