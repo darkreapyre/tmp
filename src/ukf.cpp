@@ -205,7 +205,7 @@ void UKF::Prediction(double delta_t) {
     yaw_pred = yaw + yawd * delta_t;
     if (fabs(yawd) < 0.001) {
       px_pred = px + (v * cos(yaw) * delta_t);
-      py-pred = py + (v * sin(yaw) * delta_t);
+      py_pred = py + (v * sin(yaw) * delta_t);
 //        px_pred = px + (v / yawd * (sin (yaw + yawd * delta_t) - sin(yaw));
 //        py_pred = py + v / yawd * (cos(yaw) - cos(yaw + yawd * delta_t));
     }
@@ -281,7 +281,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
   int n_z = 2; //measurement dimensions for lidar
   MatrixXd Zsig = MatrixXd(n_z, 2 * n_aug_ + 1); //create matrix for sigma points in measurement space
-  VectorXd z_pred = VectroXd(n_z); //mean predicted measurement
+  VectorXd z_pred = VectorXd(n_z); //mean predicted measurement
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     double px_pred = Xsig_pred_(0, i);
     double py_pred = Xsig_pred_(1, i);
