@@ -82,6 +82,8 @@ public:
 
   ///* augmented sigma points matrix
   MatrixXd Xsig_aug_;
+
+  Tools tools_
   
   /**
    * Constructor

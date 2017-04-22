@@ -25,10 +25,10 @@ UKF::UKF() {
   P_ = MatrixXd(5, 5);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 1.3;
+  std_a_ = 1.5;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 0.45;
+  std_yawdd_ = 0.43;
 
   // Laser measurement noise standard deviation position1 in m
   std_laspx_ = 0.15;
@@ -193,7 +193,7 @@ void UKF::Prediction(double delta_t) {
     double yaw = Xsig_aug(3, i);
     double yawd = Xsig_aug(4, i); //yaw rate
     double nu_a = Xsig_aug(5, i); //acceleration noise
-    double nu_yawdd = Xsig_aug(6, i); //yaw acceleration noise
+    double nu_yawd = Xsig_aug(6, i); //yaw acceleration noise
     double delta_t_squared = delta_t * delta_t;
     double px_pred; 
     double py_pred;
@@ -210,8 +210,8 @@ void UKF::Prediction(double delta_t) {
 //        py_pred = py + v / yawd * (cos(yaw) - cos(yaw + yawd * delta_t));
     }
     else {
-      px_pred = px + ((v / yawd) * (sin(yaw_pred) - sin(yaw)));
-      py_pred = py + ((v / yawd) * (-cos(yaw_pred) + cos(yaw)));
+      px_pred = px + ((v / yawd) * (sin(yaw_pred)-sin(yaw)));
+      py_pred = py + ((v / yawd) * (-cos(yaw_pred)+cos(yaw)));
 //        px_pred = px + v * delta_t * cos(yaw);
 //        py_pred = py + v * delta_t * sin(yaw);
     }
@@ -219,8 +219,8 @@ void UKF::Prediction(double delta_t) {
     //add noise
     px_pred += 0.5 * delta_t_squared * cos(yaw) * nu_a;
     py_pred += 0.5 * delta_t_squared * sin(yaw) * nu_a;
-    yaw_pred += 0.5 * delta_t_squared * nu_yawdd;
-    yawd_pred = yawd + delta_t * nu_yawdd;
+    yaw_pred += 0.5 * delta_t_squared * nu_yawd;
+    yawd_pred = yawd + delta_t * nu_yawd;
     v_pred = v + delta_t * nu_a;
 //    px_pred = px_pred + 0.5 * nu_a * delta_t * delta_t * cos(yaw);
 //    py_pred = px_pred + 0.5 * nu_a * delta_t * delta_t * sin(yaw);
@@ -254,8 +254,9 @@ void UKF::Prediction(double delta_t) {
     //state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
-    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
-    while (x_diff(3) <- M_PI) x_diff(3) += 2. * M_PI;
+    x_diff(3) = tools_.NormalizeAngles(x_diff(3));
+//    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
+//    while (x_diff(3) <- M_PI) x_diff(3) += 2. * M_PI;
 
     P_ = P_ + weights_(i) * x_diff * x_diff.transpose();
   }
@@ -303,9 +304,9 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     VectorXd z_diff = Zsig.col(i) - z_pred;
 
-    //angle normalization <-TBD
-    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+//    //angle normalization <-TBD
+//    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+//    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     S = S + weights_(i) * z_diff * z_diff.transpose();
   }
@@ -327,15 +328,16 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   for (int i = 0; i < 2 * n_aug_ +1; i++) {
     //residual
     VectorXd z_diff = Zsig.col(i) - z_pred;
-    //angle normalization
-    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+//    //angle normalization
+//    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+//    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     //state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
-    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
-    while (x_diff(3) <- M_PI) x_diff(3) += 2. * M_PI;
+    x_diff(3) = tools_.NormalizeAngles(x_diff(3));
+//    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
+//    while (x_diff(3) <- M_PI) x_diff(3) += 2. * M_PI;
 
     Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
   }
@@ -345,9 +347,9 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
   //residual
   VectorXd z_diff = meas_package.raw_measurements_ - z_pred;
-  //angle normalization
-  while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-  while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+//  //angle normalization
+//  while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+//  while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
   //update state and covariance matrix
   x_ = x_ + K * z_diff;
@@ -415,8 +417,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     VectorXd z_diff = Zsig.col(i) - z_pred;
 
     //angle normalization
-    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+    z_diff(1) = tools_.NormalizeAngles(z_diff(1));
+//    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+//    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     S = S + weights_(i) * z_diff * z_diff.transpose();
   }
@@ -440,14 +443,16 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     //residual
     VectorXd z_diff = Zsig.col(i) - z_pred;
     //angle normalization
-    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+    z_diff(1) = tools_.NormalizeAngles(z_diff(1));
+//    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+//    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     //state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
-    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
-    while (x_diff(3) <- M_PI) x_diff(3) += 2. * M_PI;
+    x_diff(3) = tools_.NormalizeAngles(x_diff(3));
+//    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
+//    while (x_diff(3) <- M_PI) x_diff(3) += 2. * M_PI;
 
     Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
   }
@@ -458,8 +463,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   //residual
   VectorXd z_diff = meas_package.raw_measurements_ - z_pred;
   //angle normalization
-  while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-  while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+  z_diff(1) = tools_.NormalizeAngles(z_diff(1));
+//  while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+//  while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
   //update state and covariance matrix
   x_ = x_ + K * z_diff;
