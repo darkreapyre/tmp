@@ -32,3 +32,9 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
   rmse = rmse.array().sqrt();
   return rmse;
 }
+
+double Tools::NormalizeAngles(const double radians) {
+  const double max = M_PI;
+  const double min = -M_PI;
+  return radians < min ? max + std::fmod(radians - min, max - min) : std::fmod(radians - min, max - min) + min;
+}
