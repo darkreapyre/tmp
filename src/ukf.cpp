@@ -79,7 +79,7 @@ UKF::UKF() {
 
   MatrixXd P_aug_ = MatrixXd(7, 7); //Initialize augmented state covariance matrix
 
-  MatrixXd Xsig_aug_ = MatrixXd(n_aug, 2 * n_aug + 1); //Initialize augmented sigma points matrix
+  MatrixXd Xsig_aug_ = MatrixXd(n_aug, 2 * n_aug_ + 1); //Initialize augmented sigma points matrix
 
 }
 
@@ -223,7 +223,7 @@ void UKF::Prediction(double delta_t) {
 
   //set weights
   weights_(0) = lambda_ / (lambda_ + n_aug_); //Eleviate declaring weight_0 variable
-  for (int i = 1; i < (2 * n_aug_ + 1); i++) {
+  for (int i = 1; i < 2 * n_aug_ + 1; i++) {
     weights_(i) = 0.5 / ( n_aug_ + lambda_); //Eleviate declaring weight variable
   }
 
@@ -271,16 +271,18 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     double px_pred = Xsig_pred_(0, i);
     double py_pred = Xsig_pred_(1, i);
-    double v = Xsig_pred(2, i);
-    double yaw = Xsig_pred(3, i);
-    double v1 = cos(yaw) * v;
-    double v2 = sin(yaw) * v;
+//    double v = Xsig_pred(2, i);
+//    double yaw = Xsig_pred(3, i);
+//    double v1 = cos(yaw) * v;
+//    double v2 = sin(yaw) * v;
 
     // measurement model
     MatrixXd Zsig = MatrixXd(n_z, 2 * n_aug_ + 1); //create matrix for sigma points in measurement space
-    Zsig(0, i) = sqrt(px_pred * px_pred + py_pred * py_pred);
-    Zsig(1, i) = atan2(py_pred, px_pred);
-    Zsig(2, i) = (px_pred * v1 + py_pred * v2) / sqrt(px_pred * px_pred + py_pred * py_pred);
+    Zsig(0, i) = px_pred;
+//    Zsig(0, i) = sqrt(px_pred * px_pred + py_pred * py_pred);
+    Zsig(1, i) = py_pred;
+//    Zsig(1, i) = atan2(py_pred, px_pred);
+//    Zsig(2, i) = (px_pred * v1 + py_pred * v2) / sqrt(px_pred * px_pred + py_pred * py_pred);
   }
 
   // mean predicted measurement
@@ -314,54 +316,44 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   * Modify state and covariance matrix
   *******************************************************************************/
 
-
-}
-
-
-
-
-
-  //calculate cross correlation matrix
+  //cross correlation matrix
+  MatrixXd Tc = MatrixXd(n_z, n_z);
   Tc.fill(0.0);
-  for (int i = 0; i < 2 * n_aug + 1; i++) {  //2n+1 simga points
-
+  for (int i = 0; i < 2 * n_aug_ +1; i++) {
     //residual
     VectorXd z_diff = Zsig.col(i) - z_pred;
     //angle normalization
-    while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
-    while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
+    while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+    while (z-diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
-    // state difference
-    VectorXd x_diff = Xsig_pred.col(i) - x;
+    //state difference
+    VectorXd x_diff = Xsig_pred.col(i) - x_;
     //angle normalization
-    while (x_diff(3)> M_PI) x_diff(3)-=2.*M_PI;
-    while (x_diff(3)<-M_PI) x_diff(3)+=2.*M_PI;
+    while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
+    while (x_diff(3) <- M_PI) x_diff(3)) += 2. * M_PI;
 
     Tc = Tc + weights(i) * x_diff * z_diff.transpose();
   }
 
-  //Kalman gain K;
+  //calculate Kalman gain K
   MatrixXd K = Tc * S.inverse();
 
   //residual
-  VectorXd z_diff = z - z_pred;
+  VextorXd z_diff = mease_package.raw_measurements_ - z_pred;
+  //angle normalization <- TBD
+  while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
+  while (z_diff(1) <- M_PI) z_diff += 2. * M_PI;
 
-  //angle normalization
-  while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
-  while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
+  //update state and covariance matrix
+  x_ = x_ + K * z_diff;
+  P_ = P_ - K * S * K.transpose();
 
-  //update state mean and covariance matrix
-  x = x + K * z_diff;
-  P = P - K*S*K.transpose();
+  /*****************************************************************************
+  * lidar NIS
+  ******************************************************************************/
 
-
-
-
-
-
-
-
-
+  NIS_laser_ = z_diff.trabspose() * S.inverse() * z_diff;
+}
 
 /**
  * Updates the state and the state covariance matrix using a radar measurement.
@@ -376,4 +368,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
   You'll also need to calculate the radar NIS.
   */
+
+  /**********************************************************************************
+  * Transform sigma points into measurement space
+  ***********************************************************************************/
 }
