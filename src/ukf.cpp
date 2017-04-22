@@ -272,8 +272,8 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     double px_pred = Xsig_pred_(0, i);
     double py_pred = Xsig_pred_(1, i);
-//    double v = Xsig_pred(2, i);
-//    double yaw = Xsig_pred(3, i);
+//    double v = Xsig_pred_(2, i);
+//    double yaw = Xsig_pred_(3, i);
 //    double v1 = cos(yaw) * v;
 //    double v2 = sin(yaw) * v;
 
@@ -327,7 +327,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     //state difference
-    VectorXd x_diff = Xsig_pred.col(i) - x_;
+    VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
     while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
     while (x_diff(3) <- M_PI) x_diff(3)) += 2. * M_PI;
@@ -378,8 +378,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     double px_pred = Xsig_pred_(0, i);
     double py_pred = Xsig_pred_(1, i);
-    double v = Xsig_pred(2, i);
-    double yaw = Xsig_pred(3, i);
+    double v = Xsig_pred_(2, i);
+    double yaw = Xsig_pred_(3, i);
     double v1 = cos(yaw) * v;
     double v2 = sin(yaw) * v;
     double rho = sqrt(px_pred * px_pred + py_pred * py_pred);
@@ -435,7 +435,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     while (z-diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     //state difference
-    VectorXd x_diff = Xsig_pred.col(i) - x_;
+    VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
     while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
     while (x_diff(3) <- M_PI) x_diff(3)) += 2. * M_PI;
