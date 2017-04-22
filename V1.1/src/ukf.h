@@ -29,6 +29,15 @@ public:
   ///* state covariance matrix
   MatrixXd P_;
 
+  ///* Augmented sigma points matrix
+  MatrixXd Xsig_aug_;
+
+  ///* Noise
+  MatrixXd Q_;
+
+  // Transition vector for sigma points predictions
+  VectorXd T_;
+
   ///* predicted sigma points matrix
   MatrixXd Xsig_pred_;
 
@@ -62,6 +71,12 @@ public:
   ///* State dimension
   int n_x_;
 
+  ///* Radar measurement dimension
+  int n_z_;
+
+  ///* Laser measurement dimnesion
+  int n_l_;
+
   ///* Augmented state dimension
   int n_aug_;
 
@@ -80,10 +95,6 @@ public:
   ///* augmented state covariance matrix
   MatrixXd P_aug_;
 
-  ///* augmented sigma points matrix
-  MatrixXd Xsig_aug_;
-
-  Tools tools_;
   
   /**
    * Constructor
