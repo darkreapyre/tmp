@@ -483,7 +483,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   MatrixXd K = Tc * S.inverse();
 
   //residual
-  VectorXd z = meas_package.raw_measurement_;
+  VectorXd z = meas_package.raw_measurements_;
   VectorXd z_diff = z - z_pred;
   //angle normalization
   while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
