@@ -342,7 +342,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   VectorXd z_diff = meas_package.raw_measurements_ - z_pred;
   //angle normalization
   while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-  while (z_diff(1) <- M_PI) z_diff += 2. * M_PI;
+  while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
   //update state and covariance matrix
   x_ = x_ + K * z_diff;
@@ -352,7 +352,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   * lidar NIS
   ******************************************************************************/
 
-  NIS_laser_ = z_diff.trabspose() * S.inverse() * z_diff;
+  NIS_laser_ = z_diff.transpose() * S.inverse() * z_diff;
 }
 
 /**
@@ -450,7 +450,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   VectorXd z_diff = meas_package.raw_measurements_ - z_pred;
   //angle normalization
   while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-  while (z_diff(1) <- M_PI) z_diff += 2. * M_PI;
+  while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
   //update state and covariance matrix
   x_ = x_ + K * z_diff;
@@ -460,5 +460,5 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   * radar NIS
   ******************************************************************************/
 
-  NIS_radar_ = z_diff.trabspose() * S.inverse() * z_diff;
+  NIS_radar_ = z_diff.transpose() * S.inverse() * z_diff;
 }
