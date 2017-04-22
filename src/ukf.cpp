@@ -302,7 +302,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
     while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
-    S = S + weights(i) * z_diff * z_diff.transpose();
+    S = S + weights_(i) * z_diff * z_diff.transpose();
   }
 
   //measurement noise and covariance matrix
@@ -317,14 +317,14 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   *******************************************************************************/
 
   //cross correlation matrix
-  MatrixXd Tc = MatrixXd(n_x, n_z);
+  MatrixXd Tc = MatrixXd(n_x_, n_z);
   Tc.fill(0.0);
   for (int i = 0; i < 2 * n_aug_ +1; i++) {
     //residual
     VectorXd z_diff = Zsig.col(i) - z_pred;
     //angle normalization
     while (z_diff(1) > M_PI) z_diff(1) -= 2. * M_PI;
-    while (z-diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
+    while (z_diff(1) <- M_PI) z_diff(1) += 2. * M_PI;
 
     //state difference
     VectorXd x_diff = Xsig_pred.col(i) - x_;
@@ -425,7 +425,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   *******************************************************************************/
 
   //cross correlation matrix
-  MatrixXd Tc = MatrixXd(n_x, n_z);
+  MatrixXd Tc = MatrixXd(n_x_, n_z);
   Tc.fill(0.0);
   for (int i = 0; i < 2 * n_aug_ +1; i++) {
     //residual
