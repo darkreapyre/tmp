@@ -35,6 +35,9 @@ public:
   ///* Noise
   MatrixXd Q_;
 
+  // Noise vector for sigma points predictions
+  VectorXd N_;
+
   // Transition vector for sigma points predictions
   VectorXd T_;
 
