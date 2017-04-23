@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
 
         // output the NIS values
         out_file_ << ukf.NIS_radar_ << "\t";
-        out_file_ << ukf.NIS_lidar_ << "\n";
+        out_file_ << ukf.NIS_laser_ << "\n";
 
         // convert ukf x vector to cartesian to compare to ground truth
         VectorXd ukf_x_cartesian_ = VectorXd(4);
