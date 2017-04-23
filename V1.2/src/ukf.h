@@ -28,13 +28,13 @@ public:
   ///* Augmented covariance matrix
   MatrixXd P_aug_;
 
-  ///* Augmented covariance matrix
+  ///* Augmented sigma points matrix
   MatrixXd Xsig_aug_;
 
   ///* Noise
   MatrixXd Q_;
 
-  ///* state covariance matrix
+  ///* State covariance matrix
   MatrixXd P_;
 
   ///* Transition vector for sigma points predictions
