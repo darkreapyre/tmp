@@ -1,6 +1,6 @@
 #ifndef UKF_H
 #define UKF_H
-#include "../Eigen/Dense"
+#include "Eigen/Dense"
 #include "measurement_package.h"
 #include <vector>
 
@@ -37,10 +37,10 @@ public:
   ///* state covariance matrix
   MatrixXd P_;
 
-  // Transition vector for sigma points predictions
+  ///* Transition vector for sigma points predictions
   VectorXd T_;
 
-  // Noise vector for sigma points predictions
+  ///* Noise vector for sigma points predictions
   VectorXd N_;
 
   ///* predicted sigma points matrix
@@ -76,9 +76,10 @@ public:
   ///* State dimension
   int n_x_;
 
-  ///* radar measurement dimensions
+  ///* Radar measurement dimensions
   int n_z_;
-  ///* lidar measurement dimensions
+
+  ///* Lidar measurement dimensions
   int n_l_;
 
   ///* Augmented state dimension
@@ -87,10 +88,10 @@ public:
   ///* Sigma point spreading parameter
   double lambda_;
 
-  ///* the current NIS for lidar
-  double NIS_lidar_;
+  ///* Current NIS for lidar
+  double NIS_laser_;
 
-  ///* the current NIS for radar
+  ///* Current NIS for radar
   double NIS_radar_;
 
   /**
