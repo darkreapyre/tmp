@@ -44,3 +44,17 @@ Matlab scripts that can generate additional data.
 This information is only accessible by people who are already enrolled in Term 2
 of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/c3eb3583-17b2-4d83-abf7-d852ae1b9fff/concepts/f437b8b0-f2d8-43b0-9662-72ac4e4029c1)
 for instructions and the project rubric.
+
+---
+
+## Results
+After compikling and runnin the *UnscentedKF* binary on the `../data/obj_pose-laser-radar-synthetic-input` file, the __RMSE__ results are as follows:
+
+| __RMSE__ | __Target__ | __Results__ |
+| :---: | :---: | :---: |
+| __px__ | 0.09 | 0.06417 |
+| __py__ | 0.10 | 0.0832111 |
+| __vx__ | 0.40 | 0.330425 |
+| __vy__ | 0.30 | 0.21269 |
+
+>__Note:__ For graphs of the results, please4 see the `img` directory.
