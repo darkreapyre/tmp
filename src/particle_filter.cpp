@@ -26,7 +26,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	std::normal_distribution<double> dist_x(0, std[0]);
 	std::normal_distribution<double> dist_y(0, std[1]);
 	std::normal_distribution<double> dist_theta(0, std[2]);
-	default_random_engine gen;
+	std::default_random_engine gen;
 
 	for (int i = 0; i < particles.size(); ++i) {
 		// Initial particle position and noise
@@ -56,10 +56,10 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	************************************************************************************************************/
 
 	// Random Gausian noise distribution
-	normal_distribution<double> noise_x(0, std_pos[0]);
-	normal_distribution<double> noise_y(0, std_pos[1]);
-	normal_distribution<double> noise_theta(0, std_pos[2]);
-	default_random_engine gen;
+	std::normal_distribution<double> noise_x(0, std_pos[0]);
+	std::normal_distribution<double> noise_y(0, std_pos[1]);
+	std::normal_distribution<double> noise_theta(0, std_pos[2]);
+	std::default_random_engine gen;
 
 	for (unsigned int i = 0; i < particles.size(); ++i) {
 		// Initialize predictions
@@ -210,7 +210,7 @@ void ParticleFilter::resample() {
 	auto first = weights.cbegin();
 	auto last = weights.cend();
 	auto count = distance(first, last);
-	default_random_engine gen;
+	std::default_random_engine gen;
 
 	// Initialize discrete distribution (See above)
 	discrete_distribution<int> dist(count, -0.5, -0.5 + count, [&first](size_t i){
