@@ -23,9 +23,9 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// No. particles
 	num_particles = 20;
 	
-	normal_distribution<double> dist_x(0, std[0]);
-	normal_distribution<double> dist_y(0, std[1]);
-	normal_distribution<double> dist_theta(0, std[2]);
+	std::normal_distribution<double> dist_x(0, std[0]);
+	std::normal_distribution<double> dist_y(0, std[1]);
+	std::normal_distribution<double> dist_theta(0, std[2]);
 	default_random_engine gen;
 
 	for (int i = 0; i < particles.size(); ++i) {
