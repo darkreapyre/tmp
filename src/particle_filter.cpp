@@ -70,12 +70,12 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 		// Update prediction state
 		if (yaw_rate < 0.001) {
 			x_pred = particles[i].x + velocity * cos(particles[i].theta) * delta_t;
-			y_pred = particles[i].y + velocuty * sin(particles[i].theta) * delta_t;
+			y_pred = particles[i].y + velocity * sin(particles[i].theta) * delta_t;
 			theta_pred = particles[i].theta + yaw_rate * delta_t;
 		} else {
 			x_pred = particles[i].x + (velocity / yaw_rate) * (sin(particles[i].theta + yaw_rate * delta_t) - sin(particles[i].theta));
 			y_pred = particles[i].y + (velocity / yaw_rate) * (-cos(particles[i].theta + yaw_rate * delta_t) + cos(particles[i].theta));
-			theta_pred = particles[i].theta _ yaw_rate * delta_t;
+			theta_pred = particles[i].theta + yaw_rate * delta_t;
 		}
 
 		// Add noise
@@ -99,10 +99,10 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 		double cur_dist = 1e6;
 		int landmark = -1;
 
-		for (unsigned int j = 0; j < predicted.siz(); ++j) {
+		for (unsigned int j = 0; j < predicted.size(); ++j) {
 			double s_dist = dist(observations[i].x, observations[i].y, predicted[j].x, predicted[j].y);
 
-			if (d_dist < cur_dist) {
+			if (s_dist < cur_dist) {
 				cur_dist = s_dist;
 				landmark = j;
 			}
@@ -153,7 +153,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				LandmarkObs obs;
 				obs.x = map_landmarks.landmark_list[j].x_f;
 				obs.y = map_landmarks.landmark_list[j].y_f;
-				landmarks = push_back(obs);
+				landmarks.push_back(obs);
 			}
 		}
 
@@ -187,13 +187,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				double sigma_y = std_landmark[1];
 
 				// Multi-variate Gaussian
-				weight *= exp(-((x - mu_x) * (x - mu_x) / (2 * sigma_x * sigma_x) + (y - mu_y) * (y_mu_y) / (2 * sigma_y * sigma_y))) / (2 * M_PI * sigma_x * sigma_y);
+				weight *= exp(-((x - mu_x) * (x - mu_x) / (2 * sigma_x * sigma_x) + (y - mu_y) * (y - mu_y) / (2 * sigma_y * sigma_y))) / (2 * M_PI * sigma_x * sigma_y);
 
 			}
 		}
 
 		// Update paerticles
-		weights.push_bnack(weight);
+		weights.push_back(weight);
 		particles[i].weight = weight;
 
 	}
@@ -213,7 +213,7 @@ void ParticleFilter::resample() {
 	std::default_random_engine gen;
 
 	// Initialize discrete distribution (See above)
-	discrete_distribution<int> dist(count, -0.5, -0.5 + count, [&first](size_t i){
+	std::discrete_distribution<int> dist(count, -0.5, -0.5 + count, [&first](size_t i){
 		return *std::next(first, i);
 	});
 
