@@ -6,6 +6,7 @@
 
 // for convenience
 using json = nlohmann::json;
+using namespace std;
 
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
@@ -32,8 +33,19 @@ int main()
 {
   uWS::Hub h;
 
-  PID pid;
-  // TODO: Initialize the pid variable.
+  // Initialize the pid variable.
+    PID pid_steer;
+    double Kp = 0.055;
+    double Ki = 0.0024;
+    double Kd = 1.26;
+    pid_steer.Init(Kp, Ki, Kd);
+    
+    PID pid_throttle;
+    Kp = 0.6;
+    Ki = 0.0;
+    Kd = 3.0;
+    pid_throttle.Init(Kp, Ki, Kd);
+    
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -51,12 +63,55 @@ int main()
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
-          /*
-          * TODO: Calcuate steering value here, remember the steering value is
-          * [-1, 1].
-          * NOTE: Feel free to play around with the throttle and speed. Maybe use
-          * another PID controller to control the speed!
-          */
+          double throttle_value;
+          
+          // STEERING
+          if (speed > 52 && throttle_value > 0.0) {
+            pid_steer.Kp = 0.03;
+            pid_steer.Ki = 0.0012;
+            pid_steer.Kd = 0.8;
+          } else {
+            pid_steer.Kp = 0.055;
+            pid_steer.Ki = 0.0024;
+            //pid_steer.Ki = 0.0;
+            pid_steer.Kd = 1.26;
+          }
+          
+          pid_steer.UpdateError(cte);
+          
+          if (pid_steer.i_error > 35) {
+            pid_steer.i_error = 35;
+          } else if (pid_steer.i_error < -35) {
+            pid_steer.i_error = -35;
+          }
+          
+          if (cte == 0) {
+            pid_steer.i_error = 0;
+          }
+          
+          steer_value = pid_steer.TotalError();
+          if (steer_value > 1.0) {
+            steer_value = 1.0;
+          } else if (steer_value < -1.0) {
+            steer_value = -1.0;
+          }
+          
+          // THROTTLE
+          pid_throttle.UpdateError(cte);
+          throttle_value = 1.0 - fabs(pid_throttle.TotalError());
+          double min_speed = 40;
+          double min_throttle = 0.3;
+          double max_breaking = -0.3;
+          if (throttle_value < min_throttle){
+            if (speed < min_speed) {
+              throttle_value = min_throttle;
+            } else {
+              if (throttle_value < max_breaking) {
+                throttle_value = max_breaking;
+              }
+            }
+          }
+            
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;

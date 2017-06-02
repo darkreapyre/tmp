@@ -1,6 +1,10 @@
 #ifndef PID_H
 #define PID_H
 
+#include <vector>
+#include <numeric>
+#include <iostream>
+
 class PID {
 public:
   /*
