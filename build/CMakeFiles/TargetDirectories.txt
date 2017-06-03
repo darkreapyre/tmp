@@ -1,0 +1,3 @@
+/home/ubuntu/tmp/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/tmp/build/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/tmp/build/CMakeFiles/pid.dir
