@@ -3,6 +3,16 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## PID Implementation
+
+Per the suggestion two PID controllers are used to control both the *Steering* and *Throttle Speed*.
+
+### Steering
+
+To start finding the optimal parameters for `P`, I initially set the `I` and `D` __PID__ components to `0`. Through a continual process of trial and error. increasing and decreasing the values for `I` and `D`
+
+---
+
 ## Dependencies
 
 * cmake >= 3.5
