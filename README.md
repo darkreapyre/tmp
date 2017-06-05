@@ -9,7 +9,9 @@ Per the suggestion two PID controllers are used to control both the *Steering* a
 
 ### Steering
 
-To start finding the optimal parameters for `P`, I initially set the `I` and `D` __PID__ components to `0`. Through a continual process of trial and error. increasing and decreasing the values for `I` and `D`
+To start finding the optimal parameters for `P` (*Proportional Control*), I initially set the `I` (*Integral Control*) and `D` (*Derivative Control*) __PID__ components to `0`. Through a continual process of trial and error and visually inspecting the results on the Simuulator, I applied the following methodology:
+
+- Increasing derivative gain and decresing the proportional gain to reduce the overall vehicle oscillation.
 
 ---
 
