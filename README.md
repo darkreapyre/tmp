@@ -5,13 +5,21 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## PID Implementation
 
-Per the suggestion two PID controllers are used to control both the *Steering* and *Throttle Speed*.
+Per the suggestion within the code, two PID controllers are used to control both the *Steering* and augmented by *Throttle Speed*.
 
 ### Steering
 
-To start finding the optimal parameters for `P` (*Proportional Control*), I initially set the `I` (*Integral Control*) and `D` (*Derivative Control*) __PID__ components to `0`. Through a continual process of trial and error and visually inspecting the results on the Simuulator, I applied the following methodology:
+To start finding the optimal parameters for __Steering__, through a continual process of trial and error and visually inspecting the results on the Simuulator, I applied the following methodology:
 
-- Increasing derivative gain and decresing the proportional gain to reduce the overall vehicle oscillation.
+- Initially set the `P` (*Proportional Control*), `I` (*Integral Control*) and `D` (*Derivative Control*) __PID__ components to `0`. 
+- Increasing the proportional gain which increases the degree of vehicle oscillation.
+- To offset this, increase the derivative gain and in turn decreasing the proportional gain to reduce the overall vehicle oscillation. It was noted that a too high an increase in the derivative gain causes the vehicle to over-steer. To reduce this this, without compromising the proportional gain, I gradually introduced integral gain to compensate for this and keep the vehicle toward the center.
+
+>__Note:__ This tuning methodology does not apply high speeds above `52`, therefore the values are lowered and constrained by the *Throttle Speed*.
+
+### Throttle Speed
+
+The __Throttle Speed__ is indirectly proportional to the `cte` (*cross track error*), which is the error from the desired position on the track. Basically, if the `cte` is high, then there is drift from the desired position. It was observed that a high `cte` occurred when the vehicle accelerated beyond `52` and thus the *Throttle Speed* PID  constrains the vehicle and slows it down in order for the *Steering* parameters to have an optimal effect. Additionally, it was noted that the optimal *Throttle Speed* value for the *Steering* parameters to have a full effect, was `40`.
 
 ---
 
