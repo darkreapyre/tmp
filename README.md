@@ -3,6 +3,36 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Implementation
+
+The implementation is based on the Udacity lessons for the following:
+
+### Model
+
+The model update equations for *State* and *Actuators* is implemented as:
+
+- x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
+- y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+- psi_t+1] = psi[t] + v[t] / Lf * delta[t] * dt
+- v_[t+1] = v[t] + a[t] * dt
+
+__Where:__
+
+- __x__ is the vehicle's forward direction position.
+- __y__ is the vehicle's lateral direction position.
+- __psi__ is the vehicle's orientation.
+- __v__ is the vehicles' velocity.
+- __delta__ is the vehicle's steering angle.
+- __a__ is the vehicle's acceleration.
+- __dt__ is the timestep between predictions.
+- __Lf__ is distance between the vehicle's front and gravitational center.
+
+### Length and Duration
+
+To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low and through a process of observation, 
+
+---
+
 ## Dependencies
 
 * cmake >= 3.5
