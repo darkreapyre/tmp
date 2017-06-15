@@ -33,7 +33,7 @@ To determine the optimal values for the timestep length (`N`) and duration (`dt`
 
 ### Polynomial Fitting and MPC Preprocessing
 
-After converting the the waypoints to the vehicle's local coordinate system, I used 
+After converting the the waypoints to the vehicle's local coordinate system, I used a 2nd order polynomial 
 
 ### Model Predictive Control and Latency
 
