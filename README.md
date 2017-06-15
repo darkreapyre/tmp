@@ -9,7 +9,7 @@ The implementation is based on the Udacity lessons for the following:
 
 ### Model
 
-The model update equations for *State* and *Actuators* is implemented as:
+The model update equations for are implemented as:
 
 - x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
 - y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
@@ -27,9 +27,17 @@ __Where:__
 - __dt__ is the timestep between predictions.
 - __Lf__ is distance between the vehicle's front and gravitational center.
 
-### Length and Duration
+### Timestep Length and Elapsed Duration
 
-To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low and through a process of observation, 
+To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low, `dt = 0.1` and `N = 6`. Through a process of trial and error, gradually increasing the value, I observed that the vehicle did not anticipate curves quick enough, causing it leave the track, especially at high speeds. Setting these values too high produced prohibited the vehicle from achieving a high speed due to overfitting its trajectory. Finally, a balance was achieved by increasing the `dt` to `0.12` and `N` to `15`.
+
+### Polynomial Fitting and MPC Preprocessing
+
+After converting the the waypoints to the vehicle's local coordinate system, I used 
+
+### Model Predictive Control and Latency
+
+
 
 ---
 
