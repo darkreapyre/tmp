@@ -28,22 +28,22 @@ __Where:__
 - __a__ is the vehicle's acceleration.
 - __dt__ is the timestep between predictions.
 - __Lf__ is distance between the vehicle's front and gravitational center.
-- __cte__
-- __epsi__
+- __cte__ is the difference between the desired position and actual position. 
+- __epsi__ is the difference between the desired heading and actual heading.
 
 ### Timestep Length and Elapsed Duration
 
-To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low, `dt = 0.1` and `N = 6`. Through a process of trial and error, gradually increasing the value, I observed that the vehicle did not anticipate curves quick enough, thus causing it leave the track, especially when at high speeds. Setting these values too high prohibited the vehicle from achieving a high speed due to overfitting its trajectory. Finally, a balance was achieved by setting the `dt` value to `0.12` and `N` value to `15`.
+To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low, `dt = 0.01` and `N = 6`. Through a process of trial and error, gradually increasing the value, I observed that the vehicle did not anticipate curves quick enough, thus causing it leave the track, especially when at high speeds. Setting these values too high prohibited the vehicle from achieving a high speed due to overfitting its trajectory. Finally, a balance was achieved by setting the `dt` value to `0.05` and `N` value to `10`.
 
 ### Polynomial Fitting and MPC Preprocessing
 
-After converting the the waypoints to the vehicle's local coordinate system, I used a 3rd order polynomial to fit the path. I did not experiment with a 3rd order polynomial as the observed results from the 2nd order polynomial sufficed. I was concerned that aplyhing a 3rd order polynomial would overfit the path.
+After converting the the waypoints to the vehicle's local coordinate system, I used a 3rd order polynomial to fit the path. I initially started with a 2nd order polynomial  and  oticed that the vehicle underfit the path, especially on very tight corners. changing to a 3rd order polynomial, I observed the vehicle handeling the tight curves better, especially at high speed.
 
 ### Model Predictive Control and Latency
 
 The `100` millisecond latency this is artificially introduced to simulate a real world scenario slowed the "reaction time" of the vehicle, especially when at high speeds and tight turns. To circumvent this, I increased the timestep length parameter (`N`) and thus increase the number of waypoints to examine as well as increased the penalties applied to the steering actuator.
 
-> __Note:__ Settling on the final timestep value (`N = 15`), was influenced by the induced latency.
+> __Note:__ Settling on the final timestep value (`N = 10`), was influenced by the induced latency.
 
 ---
 
