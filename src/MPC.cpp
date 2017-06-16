@@ -10,8 +10,8 @@ using CppAD::AD;
 ************************************************************************/
 
 // Set the timestep length and duration.
-size_t N = 15;
-double dt = 0.12;
+const size_t N = 15;
+const double dt = 0.12;
 
 // Initialize error variables.
 const double cte = 0;
@@ -51,9 +51,9 @@ class FG_eval {
     fg[0] = 0;
     
     // cte and epsi panalties.
-    for (int i= 0; i < N; i++) {
+    for (int i = 0; i < N; i++) {
       fg[0] += 2000 * CppAD::pow(vars[cte_start+ i] - cte, 2);
-      fg[0] += 1500 * CppAD::pow(vars[epsi_start + i] - epsi, );
+      fg[0] += 1500 * CppAD::pow(vars[epsi_start + i] - epsi, 2);
       fg[0] += CppAD::pow(vars[v_start + i] - v, 2);
     }
     
@@ -64,14 +64,14 @@ class FG_eval {
     }
     
     // Build `vars` constraints.
-    fg[x_start + 1] = vars[_start];
+    fg[x_start + 1] = vars[x_start];
     fg[y_start + 1] = vars[y_start];
     fg[psi_start + 1] = vars[psi_start];
     fg[v_start + 1] = vars[v_start];
     fg[cte_start + 1] = vars[cte_start];
     fg[epsi_start + 1] = vars[epsi_start];
     
-    for (int i = 0; i < N -1; i++) {
+    for (int i = 0; i < N - 1; i++) {
       AD<double> x_0 = vars[x_start+ 1];
       AD<double> x_1 = vars[x_start + i + 1];
       AD<double> y_0 = vars[y_start + 1];
@@ -86,10 +86,10 @@ class FG_eval {
       AD<double> epsi_1 = vars[epsi_start + i + 1];
       AD<double> cte_1 = vars[cte_start + i + 1];
       AD<double> fx_0;
-      AD<double> psides_0
+      AD<double> psides_0;
       
       // switch between polynomials.
-      if (coeffs.size () == 4) {
+      if (coeffs.size() == 4) {
         fx_0 = coeffs[0] + coeffs[1] * x_0 + coeffs[2] * CppAD::pow(x_0, 2) + coeffs[3] * CppAD::pow(x_0, 3);
         psides_0 = CppAD::atan(coeffs[1] + 2 * coeffs[2] * x_0 + 3 * coeffs[3] * CppAD::pow(x_0, 2));
       } else {
@@ -244,7 +244,7 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   
   vector<double> result(N * 2 -14);
   result[0] += solution.x[delta_psi_start];
-  result[1] += soluttion.x[a_start];
+  result[1] += solution.x[a_start];
   int waypoints = N - 1 - 7;
   for (int i = 0; i < waypoints; i++) {
     result[i + 2] = solution.x[x_start + i];
