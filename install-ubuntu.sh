@@ -1,6 +1,6 @@
 #! /bin/bash
 sudo apt-get update
-sudo apt-get install zip unzip libuv1-dev libssl-dev gcc g++ cmake make gfortran cppad
+sudo apt-get install -y zip unzip libuv1-dev libssl-dev gcc g++ cmake make gfortran cppad
 git clone https://github.com/uWebSockets/uWebSockets 
 cd uWebSockets
 git checkout e94b6e1
