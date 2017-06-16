@@ -118,7 +118,7 @@ int main() {
           double cte = polyeval(waypoint_coeff, 0) - py;
           double epsi = atan(waypoint_coeff(1));
           Eigen::VectorXd state_vec(6);
-          state_vec << px, py, pxi, v, cte, epsi;
+          state_vec << px, py, psi, v, cte, epsi;
           vector<double> mpc_out = mpc.Solve(state_vec, waypoint_coeff);
           int num_points = (mpc_out.size()- 2) / 2;
           
@@ -127,8 +127,8 @@ int main() {
           double throttle_value = mpc_out[1];
           vector<double> mpc_x_vals(num_points);
           vector<double> mpc_y_vals(num_points);
-          for (i = 0; i < num_points; i++) {
-            mpx_x_vals[i] = mpc_out[i + 2];
+          for (int i = 0; i < num_points; i++) {
+            mpc_x_vals[i] = mpc_out[i + 2];
             mpc_y_vals[i] = mpc_out[num_points + i + 2];
           }
 
@@ -145,7 +145,7 @@ int main() {
           //Display the waypoints/reference line
           vector<double> next_x_vals;
           vector<double> next_y_vals;
-          for (i = 0; i < 15; i++) {
+          for (int i = 0; i < 15; i++) {
             next_x_vals.push_back(i * 5);
             next_y_vals.push_back(polyeval(waypoint_coeff, i * 5));
           }
