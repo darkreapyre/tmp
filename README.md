@@ -9,7 +9,7 @@ The implementation is based on the Udacity lessons for the following:
 
 ### Model
 
-The model update equations for are implemented as:
+The model update equations are implemented as follows:
 
 - x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
 - y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
@@ -29,15 +29,17 @@ __Where:__
 
 ### Timestep Length and Elapsed Duration
 
-To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low, `dt = 0.1` and `N = 6`. Through a process of trial and error, gradually increasing the value, I observed that the vehicle did not anticipate curves quick enough, causing it leave the track, especially at high speeds. Setting these values too high produced prohibited the vehicle from achieving a high speed due to overfitting its trajectory. Finally, a balance was achieved by increasing the `dt` to `0.12` and `N` to `15`.
+To determine the optimal values for the timestep length (`N`) and duration (`dt`), I started by setting these values relatively low, `dt = 0.1` and `N = 6`. Through a process of trial and error, gradually increasing the value, I observed that the vehicle did not anticipate curves quick enough, thus causing it leave the track, especially when at high speeds. Setting these values too high prohibited the vehicle from achieving a high speed due to overfitting its trajectory. Finally, a balance was achieved by setting the `dt` value to `0.12` and `N` value to `15`.
 
 ### Polynomial Fitting and MPC Preprocessing
 
-After converting the the waypoints to the vehicle's local coordinate system, I used a 2nd order polynomial 
+After converting the the waypoints to the vehicle's local coordinate system, I used a 2nd order polynomial to fit the path. I did not experiment with a 3rd order polynomial as the observed results from the 2nd order polynomial sufficed. I was concerned that aplyhing a 3rd order polynomial would overfit the path.
 
 ### Model Predictive Control and Latency
 
+The `100` millisecond latency this is artificially introduced to simulate a real world scenario slowed the "reaction time" of the vehicle, especially when at high speeds and tight turns. To circumvent this, I increased the timestep length parameter (`N`) and thus increase the number of waypoints to examine as well as increased the penalties applied to the steering actuator.
 
+> __Note:__ Settling on the final timestep value (`N = 15`), was influenced by the induced latency.
 
 ---
 
