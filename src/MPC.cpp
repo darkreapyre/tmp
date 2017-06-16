@@ -14,11 +14,11 @@ const size_t N = 15;
 const double dt = 0.12;
 
 // Initialize error variables.
-const double cte = 0;
-const double epsi = 0;
+const double init_cte = 0;
+const double init_epsi = 0;
 
 // Initialize velocity variable.
-const double v = 95;
+const double init_v = 95;
 
 // Initialize state and sctuator variables.
 const size_t x_start = 0;
@@ -52,13 +52,19 @@ class FG_eval {
     
     // cte and epsi panalties.
     for (int i = 0; i < N; i++) {
-      fg[0] += 2000 * CppAD::pow(vars[cte_start+ i] - cte, 2);
-      fg[0] += 1500 * CppAD::pow(vars[epsi_start + i] - epsi, 2);
-      fg[0] += CppAD::pow(vars[v_start + i] - v, 2);
+      fg[0] += 2000 * CppAD::pow(vars[cte_start+ i] - init_cte, 2);
+      fg[0] += 1500 * CppAD::pow(vars[epsi_start + i] - init_epsi, 2);
+      fg[0] += CppAD::pow(vars[v_start + i] - init_v, 2);
+    }
+    
+    // actuator penalties.
+    for (int i = 0; i < N-1; i++) {
+      fg[0] += 20000 * CppAD::pow(vars[delta_psi_start + i], 2);
+      fg[0] += CppAD::pow(vars[a_start + i], 2);
     }
     
     // large delta value and actuator penalties.
-    for (int i = 0; i < N - 2; i++) {
+    for (int i = 0; i < N-2; i++) {
       fg[0] += 2 * CppAD::pow(vars[delta_psi_start + i + 1] - vars[delta_psi_start + i], 2);
       fg[0] += CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
     }
