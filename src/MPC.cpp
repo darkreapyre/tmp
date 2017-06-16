@@ -77,18 +77,18 @@ class FG_eval {
     fg[cte_start + 1] = vars[cte_start];
     fg[epsi_start + 1] = vars[epsi_start];
     
-    for (int i = 0; i < N - 1; i++) {
-      AD<double> x_0 = vars[x_start+ 1];
+    for (int i = 0; i < N-1; i++) {
+      AD<double> x_0 = vars[x_start + i];
       AD<double> x_1 = vars[x_start + i + 1];
-      AD<double> y_0 = vars[y_start + 1];
+      AD<double> y_0 = vars[y_start + i];
       AD<double> y_1 = vars[y_start + i + 1];
-      AD<double> psi_0 = vars[psi_start + 1];
+      AD<double> psi_0 = vars[psi_start + i];
       AD<double> psi_1 = vars[psi_start + i + 1];
-      AD<double> v_0 = vars[v_start + 1];
+      AD<double> v_0 = vars[v_start + i];
       AD<double> v_1 = vars[v_start + i + 1];
-      AD<double> delta_0 = vars[delta_psi_start + 1];
-      AD<double> a_0 = vars[a_start + 1];
-      AD<double> epsi_0 = vars[epsi_start + 1];
+      AD<double> delta_0 = vars[delta_psi_start + i];
+      AD<double> a_0 = vars[a_start + i];
+      AD<double> epsi_0 = vars[epsi_start + i];
       AD<double> epsi_1 = vars[epsi_start + i + 1];
       AD<double> cte_1 = vars[cte_start + i + 1];
       AD<double> fx_0;
@@ -121,7 +121,7 @@ class FG_eval {
 MPC::MPC() {}
 MPC::~MPC() {}
 
-vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
+vector<double> MPC::Solve(const Eigen::VectorXd state, const Eigen::VectorXd coeffs) {
   bool ok = true;
   size_t i;
   typedef CPPAD_TESTVECTOR(double) Dvector;
