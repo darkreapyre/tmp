@@ -158,14 +158,20 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     vars_upperbound[i] = numeric_limits<double>::max();
   }
   
-  /***************************************************************
-  *                        TBC
-  ****************************************************************/
+  // Steering constraints.
+  const double steering = 25 * M_PI /180;
+  for (int i = delta_psi_start; i < a_start; i++) {
+    vars_lowerbound[i] = -steering;
+    vars_upperbound[i] = steering;
+  }
   
-  
-  
+  // Acceleration constraints.
+  for (int i = a_start; i < n_vars; i++) {
+    vars_lowerbound[i] = -1.0;
+    vars_upperbound[i] = 1.0;
+  }
 
-  // Lower and upper limits for the constraints
+  // Lower and upper limits for the constraints.
   // Should be 0 besides initial state.
   Dvector constraints_lowerbound(n_constraints);
   Dvector constraints_upperbound(n_constraints);
@@ -173,14 +179,36 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     constraints_lowerbound[i] = 0;
     constraints_upperbound[i] = 0;
   }
+  
+  // Initial state constraints for x.
+  constraints_lowerbound[x_start] = x;
+  constraints_upperbound[x_start] = x;
+  
+  // Initial state constraints for y;
+  constraints_lowerbound[y_start] = y;
+  constraints_upperbound[y_start] = y;
+  
+  // Initial state constraints for psi.
+  constraints_lowerbound[psi_start] = psi;
+  constraints_upperbound[psi_start] = psi;
+  
+  // Initial state constraints for v.
+  constraints_lowerbound[v_start] = v;
+  constraints_upperbound[v_start] = v;
+  
+  // Initial state constraints for epsi.
+  constraints_lowerbound[epsi_start] = epsi;
+  constraints_upperbound[epsi_start] = epsi;
+  
+  // Initial state constraints for cte.
+  constraints_lowerbound[cte_start] = cte;
+  constraints_upperbound[cte_start] = cte;
 
-  // object that computes objective and constraints
+  // Object that computes objective and constraints.
   FG_eval fg_eval(coeffs);
 
-  //
   // NOTE: You don't have to worry about these options
-  //
-  // options for IPOPT solver
+  // for IPOPT solver
   std::string options;
   // Uncomment this if you'd like more print information
   options += "Integer print_level  0\n";
@@ -210,10 +238,47 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   auto cost = solution.obj_value;
   std::cout << "Cost " << cost << std::endl;
 
-  // TODO: Return the first actuator values. The variables can be accessed with
-  // `solution.x[i]`.
-  //
-  // {...} is shorthand for creating a vector, so auto x1 = {1.0,2.0}
-  // creates a 2 element double vector.
-  return {};
+  /***************************************************************************************
+  * Return the first actuator values. The variables can be accessed with `solution.x[i]`.
+  ****************************************************************************************/
+  
+  vector<double> result(N * 2 -14);
+  result[0] += solution.x[delta_psi_start];
+  result[1] += soluttion.x[a_start];
+  int waypoints = N - 1 - 7;
+  for (int i = 0; i < waypoints; i++) {
+    result[i + 2] = solution.x[x_start + i];
+    result[waypoints + i + 2] = solution.x[y_start + i];
+  }
+  return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
