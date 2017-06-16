@@ -15,6 +15,8 @@ The model update equations are implemented as follows:
 - y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
 - psi_t+1] = psi[t] + v[t] / Lf * delta[t] * dt
 - v_[t+1] = v[t] + a[t] * dt
+- cte[t+1] = f(x[t]) - y[t] + v[t] * sin(epsi[t]) * dt
+- epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t] / Lf * dt
 
 __Where:__
 
@@ -26,6 +28,8 @@ __Where:__
 - __a__ is the vehicle's acceleration.
 - __dt__ is the timestep between predictions.
 - __Lf__ is distance between the vehicle's front and gravitational center.
+- __cte__
+- __epsi__
 
 ### Timestep Length and Elapsed Duration
 
@@ -33,7 +37,7 @@ To determine the optimal values for the timestep length (`N`) and duration (`dt`
 
 ### Polynomial Fitting and MPC Preprocessing
 
-After converting the the waypoints to the vehicle's local coordinate system, I used a 2nd order polynomial to fit the path. I did not experiment with a 3rd order polynomial as the observed results from the 2nd order polynomial sufficed. I was concerned that aplyhing a 3rd order polynomial would overfit the path.
+After converting the the waypoints to the vehicle's local coordinate system, I used a 3rd order polynomial to fit the path. I did not experiment with a 3rd order polynomial as the observed results from the 2nd order polynomial sufficed. I was concerned that aplyhing a 3rd order polynomial would overfit the path.
 
 ### Model Predictive Control and Latency
 
