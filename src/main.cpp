@@ -42,9 +42,7 @@ double polyeval(Eigen::VectorXd coeffs, double x) {
 }
 
 // Fit a polynomial.
-// Adapted from
-// https://github.com/JuliaMath/Polynomials.jl/blob/master/src/Polynomials.jl#L676-L716
-Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
+Eigen::VectorXd polyfit(const Eigen::VectorXd &xvals, const Eigen::VectorXd &yvals,
                         int order) {
   assert(xvals.size() == yvals.size());
   assert(order >= 1 && order <= xvals.size() - 1);
@@ -103,10 +101,10 @@ int main() {
           R << cos(psi), sin(psi),
                -sin(psi), cos(psi);
           for (int i = 0; i < num_waypoints; i++) {
-            Eigen::Vector2d waypoint(ptsx[i] - px, ptsy[i] - py);
-            Eigen::Vector2d waypoint_T = R * waypoint;
-            local_x[i] = waypoint_T(0);
-            local_y[i] = waypoint_T(1);
+            Eigen::Vector2d p_waypoint(ptsx[i] - px, ptsy[i] - py);
+            Eigen::Vector2d p_waypoint_T = R * p_waypoint;
+            local_x[i] = p_waypoint_T(0);
+            local_y[i] = p_waypoint_T(1);
           }
           
           px = 0;
@@ -120,16 +118,16 @@ int main() {
           Eigen::VectorXd state_vec(6);
           state_vec << px, py, psi, v, cte, epsi;
           vector<double> mpc_out = mpc.Solve(state_vec, waypoint_coeff);
-          int num_points = (mpc_out.size()- 2) / 2;
+          int num_pts = (mpc_out.size() - 2) / 2;
           
           // Coulculate usng MPC.
           double steer_value = -mpc_out[0];
           double throttle_value = mpc_out[1];
-          vector<double> mpc_x_vals(num_points);
-          vector<double> mpc_y_vals(num_points);
-          for (int i = 0; i < num_points; i++) {
+          vector<double> mpc_x_vals(num_pts);
+          vector<double> mpc_y_vals(num_pts);
+          for (int i = 0; i < num_pts; i++) {
             mpc_x_vals[i] = mpc_out[i + 2];
-            mpc_y_vals[i] = mpc_out[num_points + i + 2];
+            mpc_y_vals[i] = mpc_out[num_pts + i + 2];
           }
 
           json msgJson;

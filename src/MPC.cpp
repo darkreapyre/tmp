@@ -143,9 +143,8 @@ vector<double> MPC::Solve(const Eigen::VectorXd state, const Eigen::VectorXd coe
   // Initial value of the independent variables.
   // SHOULD BE 0 besides initial state.
   Dvector vars(n_vars);
-  for (int i = 0; i < n_vars; i++) {
-    vars[i] = 0;
-  }
+  for (int i = 0; i < n_vars; i++)
+    vars[i] = 0.0;
   
   // Initialize variables.
   vars[x_start] = x;
@@ -165,10 +164,10 @@ vector<double> MPC::Solve(const Eigen::VectorXd state, const Eigen::VectorXd coe
   }
   
   // Steering constraints.
-  const double steering = 25 * M_PI /180;
+  const double angle = 25 * M_PI / 180;
   for (int i = delta_psi_start; i < a_start; i++) {
-    vars_lowerbound[i] = -steering;
-    vars_upperbound[i] = steering;
+    vars_lowerbound[i] = -angle;
+    vars_upperbound[i] = angle;
   }
   
   // Acceleration constraints.
@@ -251,10 +250,10 @@ vector<double> MPC::Solve(const Eigen::VectorXd state, const Eigen::VectorXd coe
   vector<double> result(N * 2 -14);
   result[0] += solution.x[delta_psi_start];
   result[1] += solution.x[a_start];
-  int waypoints = N - 1 - 7;
-  for (int i = 0; i < waypoints; i++) {
+  int num_points = N - 1 - 7;
+  for (int i = 0; i < num_points; i++) {
     result[i + 2] = solution.x[x_start + i];
-    result[waypoints + i + 2] = solution.x[y_start + i];
+    result[num_points + i + 2] = solution.x[y_start + i];
   }
   return result;
 }
