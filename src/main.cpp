@@ -118,7 +118,8 @@ int main() {
           for (int i = 0; i < ptsx.size(); i++) {
             transform_coordinates(Tform, ptsx, ptsy, ptcx, ptcy, i);
           }
-
+          
+          // // Fit 3rd order polynomial.
           Eigen::VectorXd coeffs = polyfit(ptcx, ptcy, 3);
           
           Eigen::VectorXd state(6);

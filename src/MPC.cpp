@@ -20,7 +20,7 @@ double ref_cte = 0;
 double ref_epsi = 0;
 
 // Reference velocity.
-double ref_v = 50;
+double ref_v = 55;
 
 // This value assumes the model presented in the classroom is used.
 const double Lf = 2.67;
