@@ -1,0 +1,134 @@
+Description: >
+  This template illustrates the demo architecture for a Blue/Green Deployment on ECS using the "itsacat" Prediction API.
+
+Parameters:
+  CodeCommitRepo:
+    Type: String
+    Default: itsacat-central-logging
+    Description: The repo name of the Prediction API.
+    AllowedPattern: "[A-Za-z0-9_.-]*"
+    MaxLength: 50
+  
+  CodeCommitBranch:
+    Type: String
+    Default: master
+    Description: Primary Branch for the CodeCommit Repository
+
+  TemplateBucket:
+    Type: String
+    Description: S3 Bucket used for nested templates.
+  
+  EmailAddress:
+    Description: Email Address for Approval.
+    Type: String
+
+  ClusterNodeType:
+    Description: ElastiCache node type.
+    Type: String
+    Default: cache.r4.large
+    AllowedValues:
+      - cache.t2.small
+      - cache.t2.medium
+      - cache.m4.large
+      - cache.r4.large
+
+  LogBucketName:
+    Description: Destination Bucket for Central Logging
+    Type: String
+    Default: ''
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterLabels:
+      TemplateBucket:
+        default: "Template Bucket"
+      ClusterNodeType:
+        default: "Cluster Node Type"
+      EmailAddress:
+        default: "Email Address"
+    ParameterGroups:
+      - Label:
+          default: ElastiCache Configuration
+        Parameters:
+          - ClusterNodeType
+      - Label:
+          default: Machine Lernning Pipline Configuration
+        Parameters:
+          - TemplateBucket
+          - EmailAddress
+
+Resources:
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/vpc.yaml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        VpcCIDR: 10.215.0.0/16
+        PublicSubnet1CIDR: 10.215.10.0/24
+        PublicSubnet2CIDR: 10.215.11.0/24
+        PrivateSubnet1CIDR: 10.215.20.0/24
+
+  SNN:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/SNN.yaml
+      Parameters:
+        VPC: !GetAtt VPC.Outputs.VPC
+        EnvironmentName: !Ref AWS::StackName
+        TopicEmail: !Ref EmailAddress
+        S3Bucket: !Ref TemplateBucket
+        PrivateSubnet1: !GetAtt VPC.Outputs.PrivateSubnet1
+        VpcCIDR: 10.215.0.0/16
+  
+  ElastiCache:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/elasticache.yaml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        PrivateSubnet1: !GetAtt VPC.Outputs.PrivateSubnet1
+        ClusterNodeType: !Ref ClusterNodeType
+        VPC: !GetAtt VPC.Outputs.VPC
+        VpcCIDR: 10.215.0.0/16
+
+  DeploymentPipeline:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/deployment-pipeline.yaml
+      Parameters:
+        CodeCommitRepo: !Ref CodeCommitRepo
+        CodeCommitBranch: !Ref CodeCommitBranch
+        TemplateBucket: !Ref TemplateBucket
+        Subnet1: !GetAtt VPC.Outputs.PublicSubnet1
+        Subnet2: !GetAtt VPC.Outputs.PublicSubnet2
+        VpcId: !GetAtt VPC.Outputs.VPC
+        VpcCIDR: 10.215.0.0/16
+        SNSTopic: !GetAtt SNN.Outputs.SNSTopicArn
+  
+  CentralLoggingLambda:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/central-logging-lambda.yaml
+  
+  CentralLoggingDestination:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/central-logging-destination.yaml
+      Parameters:
+        LogBucketName: !Ref LogBucketName
+        ProcessingLambdaARN: !GetAtt CentralLoggingLambda.Outputs.Function
+        SourceAccount: !Ref AWS::AccountId
+
+  CentralLoggingSubscription:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/templates/central-logging-subscription.yaml
+      Parameters:
+        DestinationARN: !GetAtt CentralLoggingDestination.Outputs.Destination
+        LogGroupName: !GetAtt VPC.Outputs.LogGroupName
+
+Outputs:
+  PipelineUrl:
+    Description: The continuous deployment pipeline in the AWS Management Console.
+    Value: !GetAtt DeploymentPipeline.Outputs.PipelineUrl
